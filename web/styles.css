@@ -63,3 +63,18 @@ main p {
   margin-bottom: 1rem;
   color: #555;
 }
+
+/* Mock mode indicator */
+.mock-indicator {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  background: #f39c12;
+  color: white;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-weight: bold;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+}

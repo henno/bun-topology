@@ -2,6 +2,7 @@ import { join } from 'path';
 
 const WEB_DIR = join(import.meta.dir, '../web');
 const PORT = 8080;
+const IS_MOCK = process.env.NETMAP_MOCK === 'true';
 
 // MIME type mapping
 const MIME_TYPES: Record<string, string> = {
@@ -24,7 +25,20 @@ const server = Bun.serve({
   port: PORT,
   async fetch(req) {
     const url = new URL(req.url);
-    let filePath = url.pathname;
+    const pathname = url.pathname;
+
+    // API endpoints
+    if (pathname === '/api/status') {
+      return new Response(
+        JSON.stringify({ mock: IS_MOCK }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Static file serving
+    let filePath = pathname;
 
     // Default to index.html for root
     if (filePath === '/') {
@@ -49,3 +63,6 @@ const server = Bun.serve({
 });
 
 console.log(`Server running at http://localhost:${server.port}`);
+if (IS_MOCK) {
+  console.log('⚠️  Running in MOCK mode');
+}
