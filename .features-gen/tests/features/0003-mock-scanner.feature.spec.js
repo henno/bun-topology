@@ -1,4 +1,4 @@
-// Generated from: tests/features/mock-scanner.feature
+// Generated from: tests/features/0003-mock-scanner.feature
 import { test } from "playwright-bdd";
 
 test.describe('Mock Scanner', () => {
@@ -15,7 +15,7 @@ test.describe('Mock Scanner', () => {
 
 test.use({
   $test: [({}, use) => use(test), { scope: 'test', box: true }],
-  $uri: [({}, use) => use('tests/features/mock-scanner.feature'), { scope: 'test', box: true }],
+  $uri: [({}, use) => use('tests/features/0003-mock-scanner.feature'), { scope: 'test', box: true }],
   $bddFileData: [({}, use) => use(bddFileData), { scope: "test", box: true }],
 });
 

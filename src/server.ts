@@ -1,5 +1,6 @@
 import { join } from 'path';
 import { ScanManager } from './scan-manager';
+import { detectNetworks } from './routes/route-detector';
 
 const WEB_DIR = join(import.meta.dir, '../web');
 const PORT = 8080;
@@ -57,6 +58,24 @@ const server = Bun.serve({
           headers: { 'Content-Type': 'application/json' },
         }
       );
+    }
+
+    // GET /api/networks - Get detected networks from routing table
+    if (pathname === '/api/networks' && method === 'GET') {
+      try {
+        const networks = await detectNetworks();
+        return new Response(
+          JSON.stringify({ networks }),
+          {
+            headers: { 'Content-Type': 'application/json' },
+          }
+        );
+      } catch (error: any) {
+        return new Response(
+          JSON.stringify({ error: { code: 'DETECTION_FAILED', message: error.message } }),
+          { status: 500, headers: { 'Content-Type': 'application/json' } }
+        );
+      }
     }
 
     // POST /scans - Start a new scan

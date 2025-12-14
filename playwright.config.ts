@@ -19,7 +19,7 @@ export default defineConfig({
   },
   projects: [
     {
-      name: 'chromium',
+      name: 'bun-topology',
       use: { ...devices['Desktop Chrome'] },
     },
   ],

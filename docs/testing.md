@@ -30,7 +30,7 @@ tests/
 
 ### Feature Files
 
-Copy acceptance criteria from GitHub issues into feature files:
+Copy acceptance criteria from GitHub issues into feature files. **Feature files must be named with the 4-digit padded issue number prefix** (e.g., `0004-scan-api.feature` for issue #4) to ensure correct test execution order.
 
 ```bash
 # View the issue to get acceptance criteria
@@ -38,7 +38,7 @@ gh issue view 4
 ```
 
 ```gherkin
-# tests/features/scan.feature
+# tests/features/0004-scan-api.feature
 Feature: Scan API
 
   Scenario: Start a scan
@@ -47,6 +47,13 @@ Feature: Scan API
     And I click Start
     Then a scan begins
 ```
+
+**Naming Convention:**
+- Issue #1 → `0001-feature-name.feature`
+- Issue #42 → `0042-feature-name.feature`
+- Issue #123 → `0123-feature-name.feature`
+
+This ensures tests run in the correct order based on issue number.
 
 ### Step Definitions
 

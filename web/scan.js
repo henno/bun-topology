@@ -7,7 +7,68 @@ document.addEventListener('DOMContentLoaded', () => {
   if (startButton) {
     startButton.addEventListener('click', startScan);
   }
+
+  // Load detected networks
+  loadDetectedNetworks();
 });
+
+async function loadDetectedNetworks() {
+  try {
+    const response = await fetch('/api/networks');
+    if (!response.ok) {
+      throw new Error('Failed to load networks');
+    }
+
+    const data = await response.json();
+    displayDetectedNetworks(data.networks);
+  } catch (error) {
+    console.error('Error loading networks:', error);
+    document.getElementById('network-list').innerHTML = '<p class="error">Failed to detect networks</p>';
+  }
+}
+
+function displayDetectedNetworks(networks) {
+  const networkList = document.getElementById('network-list');
+
+  if (networks.length === 0) {
+    networkList.innerHTML = '<p class="no-networks">No networks detected</p>';
+    return;
+  }
+
+  networkList.innerHTML = '';
+
+  networks.forEach((network) => {
+    const item = document.createElement('div');
+    item.className = 'network-item';
+    item.innerHTML = `
+      <input type="checkbox" id="network-${network.cidr}" value="${network.cidr}" data-gateway="${network.gateway}">
+      <label for="network-${network.cidr}">
+        <span class="network-cidr">${network.cidr}</span>
+        <span class="network-gateway">Gateway: ${network.gateway}</span>
+        <span class="network-interface">${network.interface}</span>
+      </label>
+    `;
+
+    // Add click handler
+    const checkbox = item.querySelector('input[type="checkbox"]');
+    checkbox.addEventListener('change', (e) => {
+      if (e.target.checked) {
+        // Uncheck all other checkboxes
+        document.querySelectorAll('.network-item input[type="checkbox"]').forEach((cb) => {
+          if (cb !== e.target) {
+            cb.checked = false;
+          }
+        });
+
+        // Fill in the form fields
+        document.getElementById('network').value = network.cidr;
+        document.getElementById('core-switch').value = network.gateway;
+      }
+    });
+
+    networkList.appendChild(item);
+  });
+}
 
 async function startScan() {
   const network = document.getElementById('network').value;

@@ -1,4 +1,4 @@
-// Generated from: tests/features/test-infrastructure.feature
+// Generated from: tests/features/0001-test-infrastructure.feature
 import { test } from "playwright-bdd";
 
 test.describe('Test Infrastructure', () => {
@@ -15,7 +15,7 @@ test.describe('Test Infrastructure', () => {
 
 test.use({
   $test: [({}, use) => use(test), { scope: 'test', box: true }],
-  $uri: [({}, use) => use('tests/features/test-infrastructure.feature'), { scope: 'test', box: true }],
+  $uri: [({}, use) => use('tests/features/0001-test-infrastructure.feature'), { scope: 'test', box: true }],
   $bddFileData: [({}, use) => use(bddFileData), { scope: "test", box: true }],
 });
 

@@ -52,7 +52,9 @@ git checkout main && git pull && git checkout -b {issue-id}-keywords
 ```
 
 **Workflow:**
-1. Copy acceptance criteria from issue to `tests/features/`
+1. Copy acceptance criteria from issue to `tests/features/{NNNN}-feature-name.feature`
+   - **IMPORTANT**: Feature files must use 4-digit padded issue numbers (e.g., `0004-scan-api.feature`)
+   - This ensures tests run in correct order
 2. Write step definitions that fail
 3. Commit failing tests
 4. Implement until green
