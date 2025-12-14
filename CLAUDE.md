@@ -14,28 +14,20 @@ tests/
   steps/                 Playwright step definitions
 docs/                    Documentation
 config.json              Server configuration
-Dockerfile               Container build
-docker-compose.yml       Production compose
-docker-compose.dev.yml   Development/mock mode overlay
+package.json             Dependencies and scripts
 ```
 
 ## Commands
 
 ```bash
-# Docker
-docker compose up -d              # Start server
-docker compose down               # Stop server
-docker build -t netmap .          # Build image
+# Development
+bun install                       # Install dependencies
+bun run dev                       # Start server
+NETMAP_MOCK=true bun run dev      # Start in mock mode
 
-# Mock mode
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
-
-# Tests (server must be running)
-bun test
+# Tests
+bun test                          # Run tests
 bun test --headed                 # With visible browser
-
-# CI locally (requires act + Docker)
-act -j test
 ```
 
 ## GitHub CLI

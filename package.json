@@ -1,0 +1,19 @@
+{
+  "name": "netmap",
+  "version": "0.1.0",
+  "description": "Network topology discovery tool",
+  "type": "module",
+  "scripts": {
+    "dev": "bun run src/server.ts",
+    "test": "./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test",
+    "test:headed": "./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test --headed"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.48.2",
+    "@types/bun": "latest",
+    "playwright-bdd": "^8.4.1"
+  },
+  "peerDependencies": {
+    "typescript": "^5.6.0"
+  }
+}

@@ -163,8 +163,7 @@ Tests run against server in mock mode (`NETMAP_MOCK=true`). The mock scanner:
 ## CI
 
 ```yaml
-- run: bun install && bunx playwright install chromium
-- run: docker compose up -d
+- run: bun install
+- run: bunx playwright install chromium
 - run: bun test
-- run: docker compose down
 ```

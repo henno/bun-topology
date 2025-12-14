@@ -52,10 +52,8 @@ Types: `feat`, `fix`, `refactor`, `test`, `docs`, `chore`
 
 **Before merge:**
 ```bash
-# Start server and run tests
-docker compose up -d
+# Run tests
 bun test
-docker compose down
 ```
 
 ## Issue Templates
@@ -98,30 +96,6 @@ Feature: [name]
 On push to `main`:
 
 1. **Test** — lint, unit tests, Playwright tests
-2. **Build** (if tests pass) — builds Docker image
-
-Distribution via Docker image — runs anywhere containers run.
-
-### Run CI Locally with `act`
-
-Save GitHub Actions minutes by running workflows locally first:
-
-```bash
-# Install (requires Docker)
-brew install act          # macOS
-choco install act-cli     # Windows
-
-# Run all workflows
-act
-
-# Run specific job
-act -j test
-
-# List available jobs
-act -l
-```
-
-On first run, choose "Medium" image (~500MB) — sufficient for most workflows.
 
 ### If CI Fails
 

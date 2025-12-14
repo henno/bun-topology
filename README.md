@@ -12,11 +12,14 @@ Network topology discovery tool. Web UI to scan networks and display discovered 
 ## Quick Start
 
 ```bash
+# Install dependencies
+bun install
+
 # Start server
-docker compose up -d
+bun run dev
 
 # Or in mock mode (for testing)
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+NETMAP_MOCK=true bun run dev
 
 # Open http://localhost:8080
 ```
@@ -32,10 +35,8 @@ gh issue view 4
 # Create branch
 git checkout -b 4-scan-api
 
-# Start server and run tests
-docker compose up -d
+# Run tests
 bun test
-docker compose down
 ```
 
 ## Project Structure
@@ -48,9 +49,7 @@ tests/
   steps/                 Playwright step definitions
 docs/                    Documentation
 config.json              Server configuration
-Dockerfile               Container build
-docker-compose.yml       Production compose
-docker-compose.dev.yml   Development/mock mode overlay
+package.json             Dependencies and scripts
 ```
 
 ## Documentation
@@ -67,7 +66,7 @@ docker-compose.dev.yml   Development/mock mode overlay
 
 ## Tech Stack
 
-- **Runtime:** Docker (backend language is your choice)
+- **Runtime:** Bun + TypeScript
 - **Frontend:** Vanilla JS
 - **Tests:** Playwright + playwright-bdd
 
