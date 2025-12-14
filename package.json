@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun run src/server.ts",
-    "test": "bun run scripts/cleanup-server.ts && ./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test",
-    "test:headed": "bun run scripts/cleanup-server.ts && ./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test --headed"
+    "pw": "bun run scripts/cleanup-server.ts && ./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test",
+    "pw:headed": "bun run scripts/cleanup-server.ts && ./node_modules/.bin/bddgen && ./node_modules/.bin/playwright test --headed"
   },
   "devDependencies": {
     "@playwright/test": "^1.48.2",

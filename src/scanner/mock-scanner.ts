@@ -42,8 +42,8 @@ export class MockScanner implements Scanner {
   ];
 
   async scan(network: string, coreSwitchIp: string): Promise<Device[]> {
-    // Simulate network delay
-    await new Promise((resolve) => setTimeout(resolve, 100));
+    // Simulate network delay (longer for testing API endpoints)
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     return this.fixtures;
   }
