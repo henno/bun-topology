@@ -17,9 +17,41 @@ export interface Scan {
 export class ScanManager {
   private currentScan: Scan | null = null;
   private scanner: Scanner;
+  private websocketClients: Map<string, Set<any>> = new Map();
 
   constructor(isMock: boolean) {
     this.scanner = isMock ? new MockScanner() : new MockScanner(); // TODO: Add real scanner
+  }
+
+  addWebSocketClient(scanId: string, ws: any) {
+    if (!this.websocketClients.has(scanId)) {
+      this.websocketClients.set(scanId, new Set());
+    }
+    this.websocketClients.get(scanId)!.add(ws);
+  }
+
+  removeWebSocketClient(scanId: string, ws: any) {
+    const clients = this.websocketClients.get(scanId);
+    if (clients) {
+      clients.delete(ws);
+      if (clients.size === 0) {
+        this.websocketClients.delete(scanId);
+      }
+    }
+  }
+
+  private broadcastToClients(scanId: string, message: any) {
+    const clients = this.websocketClients.get(scanId);
+    if (clients) {
+      const messageStr = JSON.stringify(message);
+      clients.forEach((ws) => {
+        try {
+          ws.send(messageStr);
+        } catch (error) {
+          console.error('Error sending to WebSocket client:', error);
+        }
+      });
+    }
   }
 
   async startScan(network: string, coreSwitch: string): Promise<Scan> {
@@ -53,15 +85,40 @@ export class ScanManager {
 
   private async runScan(scan: Scan) {
     try {
-      const devices = await this.scanner.scan(scan.network, scan.core_switch);
+      const devices = await this.scanner.scan(
+        scan.network,
+        scan.core_switch,
+        (device) => {
+          // Broadcast each discovered device to WebSocket clients
+          scan.devices.push(device);
+          scan.discovered = scan.devices.length;
+          this.broadcastToClients(scan.scan_id, {
+            type: 'discovered',
+            device,
+          });
+        }
+      );
 
       scan.devices = devices;
       scan.discovered = devices.length;
       scan.status = 'complete';
       scan.completed_at = new Date().toISOString();
+
+      // Broadcast completion
+      this.broadcastToClients(scan.scan_id, {
+        type: 'complete',
+        total: scan.discovered,
+      });
     } catch (error) {
       scan.status = 'failed';
       scan.completed_at = new Date().toISOString();
+
+      // Broadcast error
+      this.broadcastToClients(scan.scan_id, {
+        type: 'error',
+        message: error instanceof Error ? error.message : 'Unknown error',
+      });
+
       throw error;
     }
   }
@@ -82,6 +139,12 @@ export class ScanManager {
       if (this.currentScan.status === 'scanning') {
         this.currentScan.status = 'cancelled';
         this.currentScan.completed_at = new Date().toISOString();
+
+        // Broadcast cancellation
+        this.broadcastToClients(scanId, {
+          type: 'cancelled',
+        });
+
         return true;
       }
     }

@@ -41,9 +41,18 @@ export class MockScanner implements Scanner {
     },
   ];
 
-  async scan(network: string, coreSwitchIp: string): Promise<Device[]> {
-    // Simulate network delay (longer for testing API endpoints)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+  async scan(
+    network: string,
+    coreSwitchIp: string,
+    onDeviceDiscovered?: (device: Device) => void
+  ): Promise<Device[]> {
+    // Emit devices one by one to simulate real scanning
+    for (const device of this.fixtures) {
+      await new Promise((resolve) => setTimeout(resolve, 200));
+      if (onDeviceDiscovered) {
+        onDeviceDiscovered(device);
+      }
+    }
 
     return this.fixtures;
   }

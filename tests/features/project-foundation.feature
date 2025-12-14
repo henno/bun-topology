@@ -9,4 +9,4 @@ Feature: Project Foundation
   Scenario: Navigation works
     Given I am on the home page
     When I click "Scan" in the navigation
-    Then I am on the scan page
+    Then I navigate to the scan page

@@ -18,8 +18,28 @@
     </nav>
     <main>
       <h2>Network Scan</h2>
-      <p>Scan configuration will appear here.</p>
+
+      <div class="scan-form">
+        <div class="form-group">
+          <label for="network">Network (CIDR):</label>
+          <input type="text" name="network" id="network" placeholder="192.168.1.0/24" required>
+        </div>
+
+        <div class="form-group">
+          <label for="core-switch">Core Switch IP:</label>
+          <input type="text" name="core-switch" id="core-switch" placeholder="192.168.1.1" required>
+        </div>
+
+        <button type="button" id="start-scan">Start Scan</button>
+      </div>
+
+      <div class="scan-results" id="scan-results" style="display: none;">
+        <div class="scan-status" id="scan-status">Status: Initializing...</div>
+        <div class="device-list" id="device-list"></div>
+      </div>
     </main>
+
+    <script src="/scan.js"></script>
   </div>
 </body>
 </html>

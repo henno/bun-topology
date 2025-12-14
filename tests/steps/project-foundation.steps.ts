@@ -11,6 +11,10 @@ Given('I am on the home page', async ({ page }) => {
   await page.goto('/');
 });
 
+Given('I am on the scan page', async ({ page }) => {
+  await page.goto('/scan');
+});
+
 Then('I see the page title {string}', async ({ page }, title: string) => {
   await expect(page).toHaveTitle(title);
 });
@@ -29,6 +33,6 @@ When('I click {string} in the navigation', async ({ page }, linkText: string) =>
   await page.locator(`nav a:has-text("${linkText}")`).click();
 });
 
-Then('I am on the scan page', async ({ page }) => {
+Then('I navigate to the scan page', async ({ page }) => {
   await expect(page).toHaveURL(/\/scan/);
 });

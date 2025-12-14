@@ -13,5 +13,10 @@ export interface Device {
 // Scanner interface for dependency injection
 export interface Scanner {
   // Scan a network and return discovered devices
-  scan(network: string, coreSwitchIp: string): Promise<Device[]>;
+  // onDeviceDiscovered callback is called for each device as it's discovered
+  scan(
+    network: string,
+    coreSwitchIp: string,
+    onDeviceDiscovered?: (device: Device) => void
+  ): Promise<Device[]>;
 }

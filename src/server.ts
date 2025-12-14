@@ -27,10 +27,27 @@ function getContentType(filePath: string): string {
 
 const server = Bun.serve({
   port: PORT,
-  async fetch(req) {
+  async fetch(req, server) {
     const url = new URL(req.url);
     const pathname = url.pathname;
     const method = req.method;
+
+    // WebSocket upgrade for /scans/{id}/stream
+    if (pathname.match(/^\/scans\/[^/]+\/stream$/)) {
+      const scanId = pathname.split('/')[2];
+      const scan = scanManager.getScan(scanId);
+
+      if (!scan) {
+        return new Response('Scan not found', { status: 404 });
+      }
+
+      // Upgrade to WebSocket
+      const upgraded = server.upgrade(req, { data: { scanId } });
+      if (!upgraded) {
+        return new Response('WebSocket upgrade failed', { status: 500 });
+      }
+      return undefined;
+    }
 
     // API endpoints
     if (pathname === '/api/status') {
@@ -150,6 +167,11 @@ const server = Bun.serve({
       filePath = '/index.html';
     }
 
+    // Route page paths to .html files
+    if (filePath === '/scan' || filePath === '/devices') {
+      filePath = `${filePath}.html`;
+    }
+
     // Try to serve static file from web directory
     const fullPath = join(WEB_DIR, filePath);
     const file = Bun.file(fullPath);
@@ -164,6 +186,25 @@ const server = Bun.serve({
 
     // 404 for missing files
     return new Response('Not Found', { status: 404 });
+  },
+
+  websocket: {
+    open(ws) {
+      const { scanId } = ws.data;
+      scanManager.addWebSocketClient(scanId, ws);
+      console.log(`WebSocket client connected for scan ${scanId}`);
+    },
+
+    close(ws) {
+      const { scanId } = ws.data;
+      scanManager.removeWebSocketClient(scanId, ws);
+      console.log(`WebSocket client disconnected from scan ${scanId}`);
+    },
+
+    message(ws, message) {
+      // We don't expect messages from the client for now
+      console.log('Received WebSocket message:', message);
+    },
   },
 });
 
