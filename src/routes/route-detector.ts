@@ -86,9 +86,9 @@ function parseNetstatOutput(output: string): DetectedNetwork[] {
   const lines = output.split('\n');
 
   for (const line of lines) {
-    // Look for lines with network/mask format
+    // Look for lines with network/mask format (with explicit /prefix)
     // Example: 192.168.1/24        link#4             UCS            en0
-    const match = line.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,2})\s+.*\s+(\w+)\s*$/);
+    let match = line.match(/^(\d{1,3}\.\d{1,3}\.\d{1,3})\/(\d{1,2})\s+.*\s+(\w+)/);
 
     if (match) {
       const [, network, prefix, iface] = match;
@@ -107,6 +107,33 @@ function parseNetstatOutput(output: string): DetectedNetwork[] {
       networks.push({
         cidr,
         gateway,
+        interface: iface,
+      });
+      continue;
+    }
+
+    // Look for lines without explicit /prefix (macOS format)
+    // Example: 192.168.88         link#14            UCS                   en0
+    match = line.match(/^(\d{1,3}\.\d{1,3}\.(\d{1,3}))\s+(\S+)\s+\w+\s+(\w+)/);
+
+    if (match) {
+      const [, network, lastOctet, gateway, iface] = match;
+
+      // Skip loopback, link-local, multicast, and broadcast
+      if (network.startsWith('127.') ||
+          network.startsWith('169.254.') ||
+          network.startsWith('224.') ||
+          network.startsWith('255.')) {
+        continue;
+      }
+
+      // Assume /24 for class C networks (most common)
+      const cidr = `${network}.0/24`;
+      const gw = gateway.startsWith('link#') ? `${network}.1` : gateway;
+
+      networks.push({
+        cidr,
+        gateway: gw,
         interface: iface,
       });
     }

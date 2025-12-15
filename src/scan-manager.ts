@@ -1,5 +1,6 @@
 import type { Scanner, Device } from './scanner/types';
 import { MockScanner } from './scanner/mock-scanner';
+import { RealScanner } from './scanner/real-scanner';
 
 export type ScanStatus = 'scanning' | 'complete' | 'cancelled' | 'failed';
 
@@ -20,7 +21,7 @@ export class ScanManager {
   private websocketClients: Map<string, Set<any>> = new Map();
 
   constructor(isMock: boolean) {
-    this.scanner = isMock ? new MockScanner() : new MockScanner(); // TODO: Add real scanner
+    this.scanner = isMock ? new MockScanner() : new RealScanner();
   }
 
   addWebSocketClient(scanId: string, ws: any) {
