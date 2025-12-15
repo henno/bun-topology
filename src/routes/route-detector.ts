@@ -1,6 +1,22 @@
 import type { DetectedNetwork } from './types';
 
 export async function detectNetworks(): Promise<DetectedNetwork[]> {
+  // Return mock networks in mock mode
+  if (process.env.NETMAP_MOCK === 'true') {
+    return [
+      {
+        cidr: '192.168.1.0/24',
+        gateway: '192.168.1.1',
+        interface: 'en0',
+      },
+      {
+        cidr: '10.0.0.0/24',
+        gateway: '10.0.0.1',
+        interface: 'en1',
+      },
+    ];
+  }
+
   const platform = process.platform;
 
   if (platform === 'darwin') {
@@ -77,8 +93,11 @@ function parseNetstatOutput(output: string): DetectedNetwork[] {
     if (match) {
       const [, network, prefix, iface] = match;
 
-      // Skip loopback and link-local
-      if (network.startsWith('127.') || network.startsWith('169.254.')) {
+      // Skip loopback, link-local, multicast, and broadcast
+      if (network.startsWith('127.') ||
+          network.startsWith('169.254.') ||
+          network.startsWith('224.') ||
+          network.startsWith('255.')) {
         continue;
       }
 
@@ -109,8 +128,11 @@ function parseIpRouteOutput(output: string): DetectedNetwork[] {
       const [, cidr, iface] = match;
       const network = cidr.split('/')[0];
 
-      // Skip loopback and link-local
-      if (network.startsWith('127.') || network.startsWith('169.254.')) {
+      // Skip loopback, link-local, multicast, and broadcast
+      if (network.startsWith('127.') ||
+          network.startsWith('169.254.') ||
+          network.startsWith('224.') ||
+          network.startsWith('255.')) {
         continue;
       }
 

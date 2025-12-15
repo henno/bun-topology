@@ -8,7 +8,8 @@ Then('I see a list of detected IPv4 networks with checkboxes', async ({ page }) 
   await expect(page.locator('.network-list')).toBeVisible({ timeout: 3000 });
 
   // Should have at least one network
-  await expect(page.locator('.network-item')).toHaveCount(1, { minimum: true });
+  const count = await page.locator('.network-item').count();
+  expect(count).toBeGreaterThanOrEqual(1);
 
   // Each item should have a checkbox
   const firstItem = page.locator('.network-item').first();
@@ -41,7 +42,8 @@ Then('the core switch IP is pre-filled as the first usable IP in the range', asy
 
 Given('I see detected networks', async ({ page }) => {
   await expect(page.locator('.network-list')).toBeVisible({ timeout: 3000 });
-  await expect(page.locator('.network-item')).toHaveCount(1, { minimum: true });
+  const count = await page.locator('.network-item').count();
+  expect(count).toBeGreaterThanOrEqual(1);
 });
 
 When('I select a network from the list', async ({ page }) => {

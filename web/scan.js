@@ -140,9 +140,12 @@ function handleWebSocketMessage(message) {
       const deviceItem = document.createElement('div');
       deviceItem.className = 'device-item';
       deviceItem.innerHTML = `
+        <div class="device-icon" data-type="${message.device.device_type}" title="${message.device.device_type}">
+          ${getDeviceIcon(message.device.device_type)}
+        </div>
         <div class="device-ip">${message.device.ip}</div>
-        <div class="device-hostname">${message.device.hostname || 'Unknown'}</div>
-        <div class="device-type">${message.device.device_type}</div>
+        <div class="device-hostname">${message.device.hostname || '—'}</div>
+        <div class="device-vendor">${message.device.vendor || 'Unknown'}</div>
       `;
       deviceList.appendChild(deviceItem);
       break;
@@ -168,4 +171,20 @@ function handleWebSocketMessage(message) {
       }
       break;
   }
+}
+
+function getDeviceIcon(type) {
+  const icons = {
+    router: '🔀',      // Router
+    switch: '🔌',      // Switch
+    ap: '📡',          // Access Point
+    computer: '💻',    // Computer
+    server: '🖥️',      // Server
+    printer: '🖨️',     // Printer
+    phone: '📱',       // Phone
+    iot: '🔗',         // IoT device
+    unknown: '❓',     // Unknown
+  };
+
+  return icons[type] || icons.unknown;
 }
